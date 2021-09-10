@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Tester DOM API</title>
+</head>
+
+<body onload="main()">
+	<div id="minuri">
+	  Base-URI: <span id="uri">--</span>
+	</div>
+	<script type="text/javascript">
+		function main() {
+			var uri = document.baseURI;
+			document.getElementById("uri").innerHTML = uri;
+		}
+	</script>
+</body>  
+</html>
