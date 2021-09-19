@@ -28,8 +28,7 @@ class CircleLines {
     initCircleVertices() {
         let toPI = 2*Math.PI;
         let circleVertices = [];	//Tegnes vha. TRIANGLE_FAN
-        let stepGrader = 1;
-        let step = stepGrader;
+        let step = 1;
         let r=this.color.red, g=this.color.green, b=this.color.blue, a=this.color.alpha;
 
         // Senterpunkt:

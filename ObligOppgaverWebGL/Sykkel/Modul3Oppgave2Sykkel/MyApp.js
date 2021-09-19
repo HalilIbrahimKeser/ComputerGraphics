@@ -9,13 +9,12 @@ class MyApp {
 
         this.currentlyPressedKeys = [];
         this.lastTime = 0.0;
-        this.fpsData = new Object();
+        this.fpsData = {};
     }
 
     start() {
         this.initContext();
-        let uri = document.baseURI;
-        document.getElementById("uri").innerHTML = uri;
+        document.getElementById("uri").innerHTML = document.baseURI;
 
         let vertexShaderSource = document.getElementById("my-vertex-shader").innerHTML;
         let fragmentShaderSource = document.getElementById("my-fragment-shader").innerHTML;

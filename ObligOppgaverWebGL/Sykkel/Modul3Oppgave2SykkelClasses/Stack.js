@@ -11,17 +11,16 @@ class Stack {
 
 	//Fjerner øverste element fra stack:
 	popMatrix() {
-		if (this.matrixStack.length == 0)
+		if (this.matrixStack.length === 0)
 			throw "Feil i popMatrix - matrisestacken er tom!";
 		this.matrixStack.pop();
 	}
 
 	//Leser og returnerer toppmatrisa. NB! Fjerner ikke:
 	peekMatrix() {
-		if (this.matrixStack.length == 0)
+		if (this.matrixStack.length === 0)
 			throw "Feil i peekMatrix - matrisestacken er tom!";
-		let matrix = new Matrix4(this.matrixStack[this.matrixStack.length - 1]);
-		return matrix;
+		return new Matrix4(this.matrixStack[this.matrixStack.length - 1]);
 	}
 
 	empty() {
