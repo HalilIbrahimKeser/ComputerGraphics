@@ -15,7 +15,7 @@ let controls; //rotere, zoone hele scenen.
 let currentlyPressedKeys = {};
 let myFont;
 
-import * as THREE from '../../../lib/three/build/three.module.js';
+import * as THREE from '../../lib/three/build/three.module.js';
 import { TrackballControls } from '../../lib/three/examples/jsm/controls/TrackballControls.js';
 import { addCoordSystem} from "../../lib/wfa-coord.js";
 import { ConvexGeometry } from '../../lib/three/examples/jsm/geometries/ConvexGeometry.js';

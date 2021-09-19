@@ -82,18 +82,18 @@ function handleKeyDown(event) {
 
 function addModels() {
     //Plan:
-    let gPlane = new THREE.PlaneGeometry(SIZE * 2, SIZE * 2, 10, 10);
-    let mPlane = new THREE.MeshLambertMaterial({ color: 0xFFFFFF, side: THREE.DoubleSide, wireframe: true, wireframeLinewidth: 1 });
+    let gPlane = new THREE.PlaneGeometry(SIZE * 2, SIZE * 2);
+    let mPlane = new THREE.MeshLambertMaterial({ color: 0xFF0000, side: THREE.DoubleSide, wireframe: false, wireframeLinewidth: 1 });
     let meshPlane = new THREE.Mesh(gPlane, mPlane);
     meshPlane.rotation.x = Math.PI / 2;
-    scene.add(meshPlane);
+    //scene.add(meshPlane);
 
 	//Circle:
     let radius = SIZE/20;
-    let segments = 12;
+    let segments = 100;
     let thetaStart = 0;
-    let thetaLength = 2 * Math.PI;
-    let mCircle = new THREE.MeshLambertMaterial({ color: 0xff6611, side: THREE.DoubleSide });
+    let thetaLength = 2*Math.PI;
+    let mCircle = new THREE.MeshPhongMaterial({ color: 0xff6611, side: THREE.DoubleSide });
     let gCircle = new THREE.CircleGeometry(radius, segments, thetaStart, thetaLength);
     let meshCircle = new THREE.Mesh(gCircle, mCircle);
     meshCircle.rotation.x = Math.PI / 2;
@@ -126,7 +126,6 @@ function addModels() {
 
 	//Polyhedron
 	createPolyhedron();
-
 }
 
 function addHeartShapeModel() {
@@ -177,18 +176,18 @@ function addOddShapeModel() {
 
     // add 'eye' hole one
     let hole1 = new THREE.Path();
-    //hole1.absellipse(16, 24, 10, 3, 0, Math.PI * 2, true);
-    //shape.holes.push(hole1);
+    hole1.absellipse(16, 24, 10, 3, 0, Math.PI * 2, true);
+    shape.holes.push(hole1);
 
     // add 'eye hole 2'
     let hole2 = new THREE.Path();
-    //hole2.absellipse(23, 24, 2, 3, 0, Math.PI * 2, true);
-    //shape.holes.push(hole2);
+    hole2.absellipse(23, 24, 2, 3, 0, Math.PI * 2, true);
+    shape.holes.push(hole2);
 
     // add 'mouth'
     let hole3 = new THREE.Path();
     hole3.absarc(20, 16, 2, 0, Math.PI, true);
-    //shape.holes.push(hole3);
+    shape.holes.push(hole3);
 
     let gShape = new THREE.ShapeGeometry(shape);
     //let mShape = new THREE.MeshLambertMaterial({ color: 0x9000EE, side: THREE.DoubleSide });
