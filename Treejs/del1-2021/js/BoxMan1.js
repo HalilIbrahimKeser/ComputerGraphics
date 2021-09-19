@@ -15,7 +15,7 @@ let lastTime = 0.0;
 //Roter & zoom:
 let controls; //rotere, zoone hele scenen.
 
-//Tar vare p� tastetrykk:
+//Tar vare på tastetrykk:
 let currentlyPressedKeys = {};
 
 import * as THREE from '../../lib/three/build/three.module.js';
@@ -24,12 +24,12 @@ import { addCoordSystem } from "../../lib/wfa-coord.js";
 
 export function main() {
 	//Henter referanse til canvaset:
-	let mycanvas = document.getElementById('webgl');
+	let mycanvas = document.getElementById(`webgl`);
 
 	//Lager en scene:
 	scene = new THREE.Scene();
 
-	//Lager et rendererobjekt (og setter st�rrelse):
+	//Lager et rendererobjekt (og setter størrelse):
 	renderer = new THREE.WebGLRenderer({canvas:mycanvas, antialias:true});
 	renderer.setClearColor(0xBFD104, 0xff);  //farge, alphaverdi.
 	renderer.setSize(window.innerWidth, window.innerHeight);
@@ -128,12 +128,12 @@ function addBoxManModel() {
 			let meshRA = new THREE.Mesh(geoRA, mat);
 			meshRA.name = "rightArmObj";
 			meshRA.translateY(tH / 2);	            //Flytter OPP i forhold til torsoen.
-			meshRA.translateX(tW / 2 + raW / 2);    //Flytter til H�YRE i forhold til torsoen.
+			meshRA.translateX(tW / 2 + raW / 2);    //Flytter til HøYRE i forhold til torsoen.
 			meshTorso.add(meshRA);
 			//Right under arm:
 			let meshRUA = new THREE.Mesh(geoRUA, mat);
 			meshRUA.name = "rightUnderArmObj";
-			meshRUA.translateX(raW);    //Flytter til H�YRE i forhold til RA.
+			meshRUA.translateX(raW);    //Flytter til HØYRE i forhold til RA.
 			meshRA.add(meshRUA);        //Legges til overarmen.
 
 			//LETF (over)arm:

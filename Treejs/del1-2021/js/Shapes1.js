@@ -1,6 +1,6 @@
 /**
  * Tegner flere former / shapes.
- * Lager ogs� en egendefinert modell vha. vertekser og faces.
+ * Lager også en egendefinert modell vha. vertekser og faces.
  *
  * Tegner et plan.
  * Tegner koordinatsystemet. Stiplet for negativ del av aksen. Bruker et Geometry-objekt som igjen brukes sammen med THREE.Line.

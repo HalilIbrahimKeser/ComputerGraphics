@@ -105,7 +105,7 @@ function addModels() {
     let meshSphereNormal = new THREE.Mesh(gSphere, mSphere);
 	meshSphereNormal.position.set(-50, 60, 45);
 	meshSphereNormal.castShadow = true;
-    //scene.add(meshSphereNormal);
+    scene.add(meshSphereNormal);
 
 
     //Kule MeshLambertMaterial
@@ -114,7 +114,7 @@ function addModels() {
     //let mSphere1 = new THREE.MeshLambertMaterial({color: 0xEA0000, flatShading: true});
     let meshSphereLambert = new THREE.Mesh(gSphere1, mSphere1);
     meshSphereLambert.position.set(50, 10, -45);
-    //scene.add(meshSphereLambert);
+    scene.add(meshSphereLambert);
 
     //Kule MeshPongMaterial
     let gSphere2 = new THREE.SphereGeometry(10, 32, 32);

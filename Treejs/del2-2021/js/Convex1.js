@@ -101,7 +101,7 @@ function addModels() {
     createExtrudeMesh();
 
     //3D text:
-    add3DText("Hei verden!", 100, 100, -50);
+    add3DText("Hei Evin og Lorin!", 100, 100, -50);
 }
 
 
@@ -174,15 +174,15 @@ function getShape() {
     shape.moveTo(10, 10);
 
     // straight line upwards
-    shape.lineTo(10, 40);
+    shape.lineTo(10, 80);
 
     // the top of the figure, curve to the right
     shape.bezierCurveTo(15, 25, 25, 25, 30, 40);
 
     // spline back down
     shape.splineThru(
-      [new THREE.Vector2(32, 30),
-        new THREE.Vector2(28, 20),
+      [new THREE.Vector2(50, 30),
+        new THREE.Vector2(50, 20),
         new THREE.Vector2(30, 10),
       ])
 
