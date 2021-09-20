@@ -1,6 +1,6 @@
-import * as THREE from '../lib/three/build/three.module.js';
-import { TrackballControls } from '../lib/three/examples/jsm/controls/TrackballControls.js';
-import { addCoordSystem } from "../lib/wfa-coord.js";
+import * as THREE from '../../lib/three/build/three.module.js';
+import { TrackballControls } from '../../lib/three/examples/jsm/controls/TrackballControls.js';
+import { addCoordSystem } from "../../lib/wfa-coord.js";
 
 let renderer;
 let scene;
@@ -97,7 +97,6 @@ function addModels() {
 	arrowHelper = new THREE.ArrowHelper(speedVector, new THREE.Vector3(0, 0.01, 0), heliSpeed*100, 0xff0000);
 	scene.add(arrowHelper);
 
-	//Helikopter:
 	addHeliModel();
 }
 
@@ -113,14 +112,13 @@ function addHeliModel() {
 	let loadedTexures={};
 	const loader = new THREE.TextureLoader();
 	for ( let image of texturesToLoad ) {
-		// Laster bilde vha. TextureLoader:
 		loader.load(
 			image.url,
 			( texture ) => {
-				// Legger lastet tekstur i loadedTexures:
 				loadedTexures[image.name] = texture;
-				// Fjerner et og et element fra texturesToLoad:
+
 				texturesToLoad.splice( texturesToLoad.indexOf(image), 1);
+
 				// Når texturesToLoad er tomt er vi ferdig med lasting av teksturer:
 				if ( !texturesToLoad.length ) {
 					//Alle teksturer er nå lastet... FORTSETTER:
@@ -251,33 +249,32 @@ function animate(currentTime) {
 	render();
 };
 
-//Sjekker tastaturet (standard Javascript/WebGL):
 function keyCheck() {
-
-	if (currentlyPressedKeys[65]) { //A
+	//RETNING
+	if (currentlyPressedKeys[74]) { //J
 		let matrix = new THREE.Matrix4().makeRotationAxis( axis, delta );
 	   	speedVector.applyMatrix4( matrix );
     }
-    if (currentlyPressedKeys[83]) {	//S
+    if (currentlyPressedKeys[75]) {	//K
     	heliSpeed-=0.01;
 		if (heliSpeed<=0)
 			heliSpeed = 0.0;
     }
-    if (currentlyPressedKeys[87]) {	//W
+    if (currentlyPressedKeys[73]) {	//I
     	heliSpeed+=0.01;
 		if (heliSpeed>=10)
 			heliSpeed = 1.0;
     }
-    if (currentlyPressedKeys[68]) {	//D
+    if (currentlyPressedKeys[76]) {	//L
     	let matrix = new THREE.Matrix4().makeRotationAxis( axis, -delta );
 	   	speedVector.applyMatrix4( matrix );
     }
 
-    //Høyde (V/B):
-    if (currentlyPressedKeys[86]) { //V
+    //HØYDE
+    if (currentlyPressedKeys[78]) { //N
     	helicopter.position.y -= 0.3;
     }
-    if (currentlyPressedKeys[66]) {	//B
+    if (currentlyPressedKeys[77]) {	//M
     	helicopter.position.y += 0.3;
     }
 }
@@ -288,7 +285,6 @@ function render()
 }
 
 function onWindowResize() {
-
     camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
 
