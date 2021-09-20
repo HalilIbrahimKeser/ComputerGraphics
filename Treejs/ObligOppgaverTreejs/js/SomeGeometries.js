@@ -1,6 +1,6 @@
 import * as THREE from '../../lib/three/build/three.module.js';
-import { TrackballControls } from '../../lib/three/examples/jsm/controls/TrackballControls.js';
-import { addCoordSystem } from "../../lib/wfa-coord.js";
+import {TrackballControls} from '../../lib/three/examples/jsm/controls/TrackballControls.js';
+import {addCoordSystem} from "../../lib/wfa-coord.js";
 
 let renderer;
 let scene;
@@ -103,20 +103,19 @@ function addModels() {
 	arrowHelper = new THREE.ArrowHelper(speedVector, new THREE.Vector3(0, 0.01, 0), heliSpeed*100, 0xff0000);
 	scene.add(arrowHelper);
 
-	addHeliModel();
+	addCup();
 }
 
-function addHeliModel() {
+function addCup() {
 
-	helicopter = new THREE.Object3D();
-
-	// Laster ned FLERE teksturer:
 	let texturesToLoad = [
 		{name: 'imageCockpit', url: 'images/metal1.jpg'},
 		{name: 'imageBody', url: 'images/chocchip.png'},
 	];
+
 	let loadedTexures={};
 	const loader = new THREE.TextureLoader();
+
 	for ( let image of texturesToLoad ) {
 		loader.load(
 			image.url,
@@ -127,6 +126,48 @@ function addHeliModel() {
 
 				if ( !texturesToLoad.length ) {
 
+					let cup = new THREE.Group();
+					cup.position.x = 0;
+					cup.position.y = 0;
+					cup.position.z = 0;
+
+					let materialCup = new THREE.MeshPhongMaterial({map : loadedTexures['cupTexture'], side: THREE.DoubleSide});	//NB! MeshPhongMaterial
+
+					// Bunnen
+					let geometryCylinder = new THREE.CylinderGeometry( 0.4, 0.4, 0.05, 32 );
+					let bottomMesh = new THREE.Mesh( geometryCylinder, materialCup );
+
+					//Koppen/Lathe:
+					let points = [];
+					for (let x = 0; x < 1; x=x+0.01) {
+						let y = Math.pow(x,5)*2;
+						points.push(new THREE.Vector2(x,y));
+					}
+					let geometryCup = new THREE.LatheGeometry(points, 128, 0, 2 * Math.PI);
+					let meshCup = new THREE.Mesh(geometryCup, materialCup);
+					bottomMesh.add(meshCup);
+
+					// Kaffen
+					let geometryCoffee = new THREE.CircleGeometry( 0.9, 32 );
+					let materialCoffee = new THREE.MeshPhongMaterial({color:0x7F4600, map : loadedTexures['coffeeTexture']});	//NB! MeshPhongMaterial
+					let coffeeMesh = new THREE.Mesh( geometryCoffee, materialCoffee );
+					coffeeMesh.rotation.x = -Math.PI/2;
+					coffeeMesh.position.y = 1.4;
+					bottomMesh.add( coffeeMesh );
+
+					// Hanken/torus
+					let geometryTorus = new THREE.TorusGeometry( 15, 3, 16, 100, Math.PI );
+					let meshTorus = new THREE.Mesh( geometryTorus, materialCup );
+					meshTorus.rotation.z = -Math.PI/2 - Math.PI/14;
+					meshTorus.scale.x=0.035;
+					meshTorus.scale.y=0.035;
+					meshTorus.scale.z=0.035;
+					meshTorus.position.x = 0.8;
+					meshTorus.position.y = 1;
+					bottomMesh.add( meshTorus );
+
+					cup.add( bottomMesh );
+					scene.add(cup);
 
 					// //Cockpit:
 					// let gCockpit = new THREE.SphereGeometry(5, 32, 32);
@@ -258,19 +299,20 @@ function animate(currentTime) {
 function keyCheck() {
 
 	if (currentlyPressedKeys[65]) { //A
-		camera.position.x.rotate(2,0,1,0)
-		//camera.position.rotate(2,0,1,0)
+		camera.lookAt(0,50,10);
+		// controls.rotateX(10)
+		// controls.update();
 	}
 	if (currentlyPressedKeys[68]) { //S
-		camera.position.x.rotate(2,0,1,0)
+		//camera.position.x.rotate(2,0,1,0)
 		//camera.position.rotate(2,0,1,0)
 	}
 	if (currentlyPressedKeys[87]) { //S
-		camera.position.x.rotate(2,0,1,0)
+		//camera.position.x.rotate(2,0,1,0)
 		//camera.position.rotate(2,0,1,0)
 	}
 	if (currentlyPressedKeys[83]) { //D
-		camera.position.x.rotate(2,0,1,0)
+		//camera.position.x.rotate(2,0,1,0)
 		//camera.position.rotate(2,0,1,0)
 	}
 	//RETNING
