@@ -5,9 +5,11 @@ import { addCoordSystem } from "../../lib/wfa-coord.js";
 let renderer;
 let scene;
 let camera;
-
 let angle = 0.0;
 let lastTime = 0.0;
+let lookAtX;
+let lookAtY;
+let lookAtZ;
 
 //Roter & zoom:
 let controls; //rotere, zoome hele scenen.
@@ -41,7 +43,11 @@ export function main() {
 	camera.position.y = 200;
 	camera.position.z = 130;
 	camera.up = new THREE.Vector3(0, 1, 0);
-    let target = new THREE.Vector3(0.0, 0.0, 0.0);
+
+	lookAtX = 0.0;
+	lookAtY = 0.0;
+	lookAtZ = 0.0;
+    let target = new THREE.Vector3(lookAtX, lookAtY, lookAtZ);
     camera.lookAt(target);
 
     //SPOT LIGHT
@@ -54,8 +60,8 @@ export function main() {
 	spotLight.shadow.camera.far = 410;
 	scene.add(spotLight);
 
-	let shadowCamera = new THREE.CameraHelper( spotLight.shadow.camera )
-	scene.add(shadowCamera);
+	//let shadowCamera = new THREE.CameraHelper( spotLight.shadow.camera )
+	//scene.add(shadowCamera);
 
 	//DIRECTIONAL LIGHT
 	let directionalLight = new THREE.DirectionalLight(0x5055ff, 1.0); //farge, intensitet (1=default)
@@ -119,59 +125,59 @@ function addHeliModel() {
 
 				texturesToLoad.splice( texturesToLoad.indexOf(image), 1);
 
-				// Når texturesToLoad er tomt er vi ferdig med lasting av teksturer:
 				if ( !texturesToLoad.length ) {
-					//Alle teksturer er nå lastet... FORTSETTER:
-					//Cockpit:
-					let gCockpit = new THREE.SphereGeometry(5, 32, 32);
-					let mCockpit = new THREE.MeshPhongMaterial({ map: loadedTexures['imageCockpit']  });
-					let meshCockpit = new THREE.Mesh(gCockpit, mCockpit);
-					meshCockpit.castShadow = true;
-					meshCockpit.name = "cockpit";
-					meshCockpit.position.x = 0;
-					meshCockpit.position.y = 0;
-					meshCockpit.position.z = 0;
-					helicopter.add(meshCockpit);
 
-					//Body:
-					let gBody = new THREE.CylinderGeometry(1.0, 4, 12, 8, 4, false);
-					let mBody = new THREE.MeshPhongMaterial({ map: loadedTexures['imageBody']  });
-					let meshBody = new THREE.Mesh(gBody, mBody);
-					meshBody.castShadow = true;
-					meshBody.name = "body";
-					meshBody.rotation.z = Math.PI / 2;
-					meshBody.position.x = -7;
-					meshBody.position.y = 0;
-					meshBody.position.z = 0;
-					helicopter.add(meshBody);
 
-					//Rotor:
-					let gRotor = new THREE.BoxGeometry(0.2, 20, 1);
-					let mRotor = new THREE.MeshBasicMaterial({ color:0x00de88});
-					let meshRotor = new THREE.Mesh(gRotor, mRotor);
-					meshRotor.name = "rotor";
-					meshRotor.rotation.z = Math.PI / 2;
-					meshRotor.rotation.y = Math.PI / 5;
-					meshRotor.position.x = 0;
-					meshRotor.position.y = 5;
-					meshRotor.position.z = 0;
-					meshRotor.castShadow = true;
-					helicopter.add(meshRotor);
-
-					//Bakrotor:
-					let gBRotor = new THREE.BoxGeometry(5, 1, 0.2);
-					let mBRotor = new THREE.MeshBasicMaterial({ color:0x00de88});
-					let meshBRotor = new THREE.Mesh(gBRotor, mBRotor);
-					meshBRotor.name = "bakrotor";
-					meshBRotor.position.x = -13.0;
-					meshBRotor.position.y = 1;
-					meshBRotor.position.z = 0;
-					helicopter.add(meshBRotor);
-
-					scene.add(helicopter);
-
-					//Flytter hele helikoptret:
-					helicopter.position.y = 100;
+					// //Cockpit:
+					// let gCockpit = new THREE.SphereGeometry(5, 32, 32);
+					// let mCockpit = new THREE.MeshPhongMaterial({ map: loadedTexures['imageCockpit']  });
+					// let meshCockpit = new THREE.Mesh(gCockpit, mCockpit);
+					// meshCockpit.castShadow = true;
+					// meshCockpit.name = "cockpit";
+					// meshCockpit.position.x = 0;
+					// meshCockpit.position.y = 0;
+					// meshCockpit.position.z = 0;
+					// helicopter.add(meshCockpit);
+					//
+					// //Body:
+					// let gBody = new THREE.CylinderGeometry(1.0, 4, 12, 8, 4, false);
+					// let mBody = new THREE.MeshPhongMaterial({ map: loadedTexures['imageBody']  });
+					// let meshBody = new THREE.Mesh(gBody, mBody);
+					// meshBody.castShadow = true;
+					// meshBody.name = "body";
+					// meshBody.rotation.z = Math.PI / 2;
+					// meshBody.position.x = -7;
+					// meshBody.position.y = 0;
+					// meshBody.position.z = 0;
+					// helicopter.add(meshBody);
+					//
+					// //Rotor:
+					// let gRotor = new THREE.BoxGeometry(0.2, 20, 1);
+					// let mRotor = new THREE.MeshBasicMaterial({ color:0x00de88});
+					// let meshRotor = new THREE.Mesh(gRotor, mRotor);
+					// meshRotor.name = "rotor";
+					// meshRotor.rotation.z = Math.PI / 2;
+					// meshRotor.rotation.y = Math.PI / 5;
+					// meshRotor.position.x = 0;
+					// meshRotor.position.y = 5;
+					// meshRotor.position.z = 0;
+					// meshRotor.castShadow = true;
+					// helicopter.add(meshRotor);
+					//
+					// //Bakrotor:
+					// let gBRotor = new THREE.BoxGeometry(5, 1, 0.2);
+					// let mBRotor = new THREE.MeshBasicMaterial({ color:0x00de88});
+					// let meshBRotor = new THREE.Mesh(gBRotor, mBRotor);
+					// meshBRotor.name = "bakrotor";
+					// meshBRotor.position.x = -13.0;
+					// meshBRotor.position.y = 1;
+					// meshBRotor.position.z = 0;
+					// helicopter.add(meshBRotor);
+					//
+					// scene.add(helicopter);
+					//
+					// //Flytter hele helikoptret:
+					// helicopter.position.y = 100;
 
 					// Starter løkka!
 					animate();
@@ -202,11 +208,11 @@ function addControls() {
 
 function animate(currentTime) {
 	requestAnimationFrame(animate);
-	if (currentTime == undefined)
+	if (currentTime === undefined)
 	    currentTime = 0; //Udefinert første gang.
 
 	let elapsed = 0.0; 			// Forløpt tid siden siste kall på draw().
-	if (lastTime != 0.0) 		// Først gang er lastTime = 0.0.
+	if (lastTime !== 0.0) 		// Først gang er lastTime = 0.0.
 		elapsed = (currentTime - lastTime)/1000; //Opererer med sekunder.
 
 	lastTime = currentTime;
@@ -217,10 +223,10 @@ function animate(currentTime) {
 
 	//Roterer helikoptrets rotor:
 	let rotor = helicopter.getObjectByName("rotor", true);  //true = recursive...
-	if (rotor != undefined)
+	if (rotor !== undefined)
 		rotor.rotation.y = angle;
 	let bakrotor = helicopter.getObjectByName("bakrotor", true);  //true = recursive...
-	if (bakrotor != undefined)
+	if (bakrotor !== undefined)
 		bakrotor.rotation.z = angle;
 
 	// Oppdaterer posisjonsvektoren vha. fartsvektoren:
@@ -247,9 +253,26 @@ function animate(currentTime) {
 
 	//Tegner scenen med gitt kamera:
 	render();
-};
+}
 
 function keyCheck() {
+
+	if (currentlyPressedKeys[65]) { //A
+		camera.position.x.rotate(2,0,1,0)
+		//camera.position.rotate(2,0,1,0)
+	}
+	if (currentlyPressedKeys[68]) { //S
+		camera.position.x.rotate(2,0,1,0)
+		//camera.position.rotate(2,0,1,0)
+	}
+	if (currentlyPressedKeys[87]) { //S
+		camera.position.x.rotate(2,0,1,0)
+		//camera.position.rotate(2,0,1,0)
+	}
+	if (currentlyPressedKeys[83]) { //D
+		camera.position.x.rotate(2,0,1,0)
+		//camera.position.rotate(2,0,1,0)
+	}
 	//RETNING
 	if (currentlyPressedKeys[74]) { //J
 		let matrix = new THREE.Matrix4().makeRotationAxis( axis, delta );
@@ -294,19 +317,6 @@ function onWindowResize() {
     render();
 }
 
-/*
-	Fra: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/atan2
-	The Math.atan2() function returns the angle in the plane (in radians) between the positive x-axis
-	and the ray from (0,0) to the point (x,y), for Math.atan2(y,x).
-
-	Math.atan2() opererer med et standard 2D koordinatsystem med positiv Y oppover og positiv X til høyre.
-	Her opererer vi imidlertid i x/z-planet der z-aksen vil ha motsatt fortegn i forhold til
-	tilsvarende y-akse i 2D. Tenk deg at du "bikker" XY-systemet bakover slik at det blir liggende
-	oppå XZ-planet: +Y vil da tilsvare -Z
-
-	Math.atan2() opererer med et "normalt" 2D XY-system.
-	Vi må derfor trekke fra 90 grader når vi bruker Atan2() funksjonen.
- */
 function getRotationAngleUsingAtan2()
 {
 	return Math.atan2(speedVector.x, speedVector.z) - Math.PI / 2;
