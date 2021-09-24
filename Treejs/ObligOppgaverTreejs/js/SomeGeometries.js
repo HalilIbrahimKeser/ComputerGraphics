@@ -60,8 +60,8 @@ export function main() {
 	spotLight.shadow.camera.far = 410;
 	scene.add(spotLight);
 
-	//let shadowCamera = new THREE.CameraHelper( spotLight.shadow.camera )
-	//scene.add(shadowCamera);
+	// let shadowCamera = new THREE.CameraHelper( spotLight.shadow.camera )
+	// scene.add(shadowCamera);
 
 	//DIRECTIONAL LIGHT
 	let directionalLight = new THREE.DirectionalLight(0x5055ff, 1.0); //farge, intensitet (1=default)
@@ -92,8 +92,8 @@ function handleKeyDown(event) {
 
 function addModels() {
 	//Plan:
-	let gPlane = new THREE.PlaneGeometry( SIZE*2, SIZE*2 );
-	let mPlane = new THREE.MeshLambertMaterial( {color: 0xfffffff, side: THREE.DoubleSide } );
+	let gPlane = new THREE.PlaneGeometry( SIZE*3, SIZE*3 );
+	let mPlane = new THREE.MeshLambertMaterial( {color: 0xffffffff, side: THREE.DoubleSide } );
 	let meshPlane = new THREE.Mesh( gPlane, mPlane);
 	meshPlane.rotation.x = Math.PI / 2;
 	meshPlane.receiveShadow = true;	//NB!
@@ -104,6 +104,51 @@ function addModels() {
 	scene.add(arrowHelper);
 
 	addCup();
+
+
+
+	addCube();
+
+}
+
+function addCube() {
+	let texturesToLoad = [
+		{name: 'imageCockpit', url: 'images/metal1.jpg'},
+	];
+
+	let loadedTexures={};
+	const loader = new THREE.TextureLoader();
+
+	for ( let image of texturesToLoad ) {
+		loader.load(
+			image.url,
+			( texture ) => {
+				loadedTexures[image.name] = texture;
+
+				texturesToLoad.splice( texturesToLoad.indexOf(image), 1);
+
+				if ( !texturesToLoad.length ) {
+
+					let cup = new THREE.Group();
+					cup.position.x = 20;
+					cup.position.y = 0;
+					cup.position.z = 0;
+					cup.scale.x = 10;
+					cup.scale.y = 10;
+					cup.scale.z = 10;
+
+					let materialCube = new THREE.MeshPhongMaterial({map : loadedTexures['cubeTexture'], side: THREE.DoubleSide});	//NB! MeshPhongMaterial
+
+
+					animate();
+				}
+				console.log('[TextureLoader] Loaded %o', image.name);
+			},
+			undefined,
+			function ( err ) {
+				console.error( 'Feil ved lasting av teksturfil...' );
+			});
+	}
 }
 
 function addCup() {
@@ -127,9 +172,12 @@ function addCup() {
 				if ( !texturesToLoad.length ) {
 
 					let cup = new THREE.Group();
-					cup.position.x = 0;
+					cup.position.x = 20;
 					cup.position.y = 0;
 					cup.position.z = 0;
+					cup.scale.x = 10;
+					cup.scale.y = 10;
+					cup.scale.z = 10;
 
 					let materialCup = new THREE.MeshPhongMaterial({map : loadedTexures['cupTexture'], side: THREE.DoubleSide});	//NB! MeshPhongMaterial
 
@@ -258,33 +306,33 @@ function animate(currentTime) {
 
 	lastTime = currentTime;
 
-	let rotationSpeed = (Math.PI); // Bestemmer rotasjonshastighet.
-	angle = angle + (rotationSpeed * elapsed);
-	angle %= (Math.PI * 2); // "Rull rundt" dersom angle >= 360 grader.
+	// let rotationSpeed = (Math.PI); // Bestemmer rotasjonshastighet.
+	// angle = angle + (rotationSpeed * elapsed);
+	// angle %= (Math.PI * 2); // "Rull rundt" dersom angle >= 360 grader.
 
-	//Roterer helikoptrets rotor:
-	let rotor = helicopter.getObjectByName("rotor", true);  //true = recursive...
-	if (rotor !== undefined)
-		rotor.rotation.y = angle;
-	let bakrotor = helicopter.getObjectByName("bakrotor", true);  //true = recursive...
-	if (bakrotor !== undefined)
-		bakrotor.rotation.z = angle;
+	// //Roterer helikoptrets rotor:
+	// let rotor = helicopter.getObjectByName("rotor", true);  //true = recursive...
+	// if (rotor !== undefined)
+	// 	rotor.rotation.y = angle;
+	// let bakrotor = helicopter.getObjectByName("bakrotor", true);  //true = recursive...
+	// if (bakrotor !== undefined)
+	// 	bakrotor.rotation.z = angle;
 
-	// Oppdaterer posisjonsvektoren vha. fartsvektoren:
-	positionVector.x = positionVector.x + (speedVector.x * heliSpeed);
-	positionVector.y = 0;
-	positionVector.z = positionVector.z + (speedVector.z * heliSpeed);
+	// // Oppdaterer posisjonsvektoren vha. fartsvektoren:
+	// positionVector.x = positionVector.x + (speedVector.x * heliSpeed);
+	// positionVector.y = 0;
+	// positionVector.z = positionVector.z + (speedVector.z * heliSpeed);
 
-	// Bruker posisjonsvektoren til å oppdatere helikoptrets posisjon:
-	helicopter.position.x = positionVector.x;
-	helicopter.position.z = positionVector.z;
-
-	// Roterer helikoptret i forhold til fartsvektoren:
-	helicopter.rotation.y = getRotationAngleUsingAtan2();
-
-	// Illustrerer fartsvektoren:
-	arrowHelper.setDirection(speedVector);
-	arrowHelper.setLength(heliSpeed*100);
+	// // Bruker posisjonsvektoren til å oppdatere helikoptrets posisjon:
+	// helicopter.position.x = positionVector.x;
+	// helicopter.position.z = positionVector.z;
+	//
+	// // Roterer helikoptret i forhold til fartsvektoren:
+	// helicopter.rotation.y = getRotationAngleUsingAtan2();
+	//
+	// // Illustrerer fartsvektoren:
+	// arrowHelper.setDirection(speedVector);
+	// arrowHelper.setLength(heliSpeed*100);
 
 	//Sjekker input:
 	keyCheck();
