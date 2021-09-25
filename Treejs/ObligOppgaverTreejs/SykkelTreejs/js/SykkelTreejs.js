@@ -40,7 +40,7 @@ export function main() {
 
 	//KAMERA
 	camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-	camera.position.x = 80;
+	camera.position.x = 100;
 	camera.position.y = 50;
 	camera.position.z = 70;
 	camera.up = new THREE.Vector3(0, 1, 0);
@@ -108,11 +108,13 @@ function addPlane() {
 }
 
 function addBicycle() {
-	bicycle = new THREE.Object3D();
+	//bicycle = new THREE.Object3D();
 
 	let texturesToLoad = [
 		{name: 'rammeTexture', url: '../images/black-metal.jpg'},
-		{name: 'wheelTexture', url: '../images/rubber_texture1332.jpg'}
+		{name: 'wheelTexture', url: '../images/rubber_texture1332.jpg'},
+		{name: 'frontTexture', url: '../images/Tileable_metal.jpg'},
+		{name: 'cylinderTexture', url: '../images/21.metal-textures.jpg'}
 	];
 
 	let loadedTexures={};
@@ -126,13 +128,14 @@ function addBicycle() {
 				texturesToLoad.splice( texturesToLoad.indexOf(image), 1);
 
 				if ( !texturesToLoad.length ) {
-					let frame = new THREE.Group();
-					frame.position.x = 0;
-					frame.position.y = 50;
-					frame.position.z = 0;
-					frame.scale.x = 20;
-					frame.scale.y = 20;
-					frame.scale.z = 20;
+
+					let bicycle = new THREE.Group();
+					bicycle.position.x = 0;
+					bicycle.position.y = 50;
+					bicycle.position.z = 15;
+					bicycle.scale.x = 20;
+					bicycle.scale.y = 20;
+					bicycle.scale.z = 20;
 
 					// FRAME
 					let materialFrameTop = new THREE.MeshPhongMaterial({map : loadedTexures['rammeTexture'], side: THREE.DoubleSide});
@@ -140,128 +143,158 @@ function addBicycle() {
 					let frameMeshTop = new THREE.Mesh( geometryFrameTop, materialFrameTop );
 					frameMeshTop.castShadow = true;
 					// ITORS - I * T (position) * O (orbit) * R (rotation) * S (scale)  der O = R * T
-					frameMeshTop.name = "RammeTop";
+					frameMeshTop.name = "Ramme Top";
 					frameMeshTop.position.x = 0;
 					frameMeshTop.position.y = 0;
 					frameMeshTop.position.z = 0;
 					frameMeshTop.rotation.x = 1.75  //<--NB radianer
-					frame.add(frameMeshTop);
+					bicycle.add(frameMeshTop);
 
 					let materialFrameBack = new THREE.MeshPhongMaterial({map : loadedTexures['rammeTexture'], side: THREE.DoubleSide});
 					let geometryFrameBack = new THREE.CylinderGeometry(0.08, 0.08, 2, 30, 1, false, 0, 2*Math.PI)
 					let frameMeshBack = new THREE.Mesh( geometryFrameBack, materialFrameBack );
 					frameMeshBack.castShadow = true;
-					frameMeshBack.name = "RammeBak";
+					frameMeshBack.name = "Ramme Bak";
 					frameMeshBack.position.x = 0;
 					frameMeshBack.position.y = -0.7;
 					frameMeshBack.position.z = 1.4;
 					frameMeshBack.rotation.x = 0.2
-					frame.add(frameMeshBack);
+					bicycle.add(frameMeshBack);
 
 					let materialFrameBackTopRight = new THREE.MeshPhongMaterial({map : loadedTexures['rammeTexture'], side: THREE.DoubleSide});
 					let geometryFrameBackTopRight = new THREE.CylinderGeometry(0.03, 0.03, 1.7, 30, 1, false, 0, 2*Math.PI)
 					let frameMeshBackTopRight = new THREE.Mesh( geometryFrameBackTopRight, materialFrameBackTopRight );
 					frameMeshBackTopRight.castShadow = true;
-					frameMeshBackTopRight.name = "RammeBak";
+					frameMeshBackTopRight.name = "Ramme Bak Øvre Høyre";
 					frameMeshBackTopRight.position.x = 0.08;
 					frameMeshBackTopRight.position.y = -0.85;
 					frameMeshBackTopRight.position.z = 2.1;
 
 					frameMeshBackTopRight.rotation.x = -0.8
-					frame.add(frameMeshBackTopRight);
+					bicycle.add(frameMeshBackTopRight);
 
 					let materialFrameBackDownRight = new THREE.MeshPhongMaterial({map : loadedTexures['rammeTexture'], side: THREE.DoubleSide});
 					let geometryFrameBackDownRight = new THREE.CylinderGeometry(0.04, 0.04, 1.55, 30, 2, false, 0, 2*Math.PI)
 					let frameMeshBackDownRight = new THREE.Mesh( geometryFrameBackDownRight, materialFrameBackDownRight );
 					frameMeshBackDownRight.castShadow = true;
-					frameMeshBackDownRight.name = "RammeBak";
+					frameMeshBackDownRight.name = "Ramme Bak Nedre Høyre";
 					frameMeshBackDownRight.position.x = 0.08;
 					frameMeshBackDownRight.position.y = -1.53;
 					frameMeshBackDownRight.position.z = 1.95;
 					frameMeshBackDownRight.rotation.x = 1.45
-					frame.add(frameMeshBackDownRight);
+					bicycle.add(frameMeshBackDownRight);
 
 					let materialFrameBackTopLeft = new THREE.MeshPhongMaterial({map : loadedTexures['rammeTexture'], side: THREE.DoubleSide});
 					let geometryFrameBackTopLeft = new THREE.CylinderGeometry(0.03, 0.03, 1.7, 30, 1, false, 0, 2*Math.PI)
 					let frameMeshBackTopLeft = new THREE.Mesh( geometryFrameBackTopLeft, materialFrameBackTopLeft );
 					frameMeshBackTopLeft.castShadow = true;
-					frameMeshBackTopLeft.name = "RammeBak";
+					frameMeshBackTopLeft.name = "Ramme Bak Øvre Venstre";
 					frameMeshBackTopLeft.position.x = -0.08;
 					frameMeshBackTopLeft.position.y = -0.85;
 					frameMeshBackTopLeft.position.z = 2.1;
 
 					frameMeshBackTopLeft.rotation.x = -0.8
-					frame.add(frameMeshBackTopLeft);
+					bicycle.add(frameMeshBackTopLeft);
 
 					let materialFrameBackDownLeft = new THREE.MeshPhongMaterial({map : loadedTexures['rammeTexture'], side: THREE.DoubleSide});
 					let geometryFrameBackDownLeft = new THREE.CylinderGeometry(0.04, 0.04, 1.55, 30, 2, false, 0, 2*Math.PI)
 					let frameMeshBackDownLeft = new THREE.Mesh( geometryFrameBackDownLeft, materialFrameBackDownLeft );
 					frameMeshBackDownLeft.castShadow = true;
-					frameMeshBackDownLeft.name = "RammeBak";
+					frameMeshBackDownLeft.name = "Ramme Bak Nedre Venstre";
 					frameMeshBackDownLeft.position.x = -0.08;
 					frameMeshBackDownLeft.position.y = -1.53;
 					frameMeshBackDownLeft.position.z = 1.95;
 					frameMeshBackDownLeft.rotation.x = 1.45
-					frame.add(frameMeshBackDownLeft);
+					bicycle.add(frameMeshBackDownLeft);
 
 					let materialFrameFront = new THREE.MeshPhongMaterial({map : loadedTexures['rammeTexture'], side: THREE.DoubleSide});
 					let geometryFrameFront = new THREE.CylinderGeometry(0.07, 0.07, 3.2, 30, 1, false, 0, 2*Math.PI)
 					let frameMeshFront = new THREE.Mesh( geometryFrameFront, materialFrameFront );
 					frameMeshFront.castShadow = true;
-					frameMeshFront.name = "RammeFront";
+					frameMeshFront.name = "Ramme front";
 					frameMeshFront.position.x = 0;
 					frameMeshFront.position.y = -0.912;
 					frameMeshFront.position.z = -0.2;
 					frameMeshFront.rotation.x = -1.1
-					frame.add(frameMeshFront);
-
-					let materialFrameFrontSmall = new THREE.MeshPhongMaterial({map : loadedTexures['rammeTexture'], side: THREE.DoubleSide});
-					let geometryFrameFrontSmall = new THREE.CylinderGeometry(0.07, 0.07, 0.56, 30, 1, false, 0, 2*Math.PI)
-					let frameMeshFrontSmall = new THREE.Mesh( geometryFrameFrontSmall, materialFrameFrontSmall );
-					frameMeshFrontSmall.castShadow = true;
-					frameMeshFrontSmall.name = "RammeFront";
-					frameMeshFrontSmall.position.x = 0;
-					frameMeshFrontSmall.position.y = 0;
-					frameMeshFrontSmall.position.z = -1.5;
-					frameMeshFrontSmall.rotation.x = 0.30
-					frame.add(frameMeshFrontSmall);
+					bicycle.add(frameMeshFront);
 
 					// BACK WHEEL
 					let materialWheelBack = new THREE.MeshPhongMaterial({map : loadedTexures['wheelTexture'], side: THREE.DoubleSide});
 					let geometryWheelBack = new THREE.TorusGeometry(1, 0.07, 50, 100, Math.PI * 2)
 					let wheelBackMesh = new THREE.Mesh( geometryWheelBack, materialWheelBack );
 					wheelBackMesh.castShadow = true;
-					wheelBackMesh.name = "RammeFront";
+					wheelBackMesh.name = "Bak hjul";
 					wheelBackMesh.position.x = 0;
 					wheelBackMesh.position.y = -1.4;
 					wheelBackMesh.position.z = 2.5;
 					wheelBackMesh.rotation.y = 1.57
-					frame.add(wheelBackMesh);
+					bicycle.add(wheelBackMesh);
 
-
+					//---------------------------------------------------------------------
 					// STEERING
-					let steering = new THREE.Group();
-					steering.position.x = 0;
-					steering.position.y = 0;
-					steering.position.z = 0;
-					steering.scale.x = 1;
-					steering.scale.y = 1;
-					steering.scale.z = 1;
 
 					// FRONT WHEEL
 					let materialWheelFront = new THREE.MeshPhongMaterial({map : loadedTexures['wheelTexture'], side: THREE.DoubleSide});
 					let geometryWheelFront = new THREE.TorusGeometry(1, 0.07, 50, 100, Math.PI * 2)
 					let wheelFrontMesh = new THREE.Mesh( geometryWheelFront, materialWheelFront );
 					wheelFrontMesh.castShadow = true;
-					wheelFrontMesh.name = "RammeFront";
+					wheelFrontMesh.name = "Front hjul";
 					wheelFrontMesh.position.x = 0;
 					wheelFrontMesh.position.y = -1.4;
 					wheelFrontMesh.position.z = -2;
 					wheelFrontMesh.rotation.y = 1.57
-					steering.add(wheelFrontMesh);
+					bicycle.add(wheelFrontMesh);
+					// FRONT WHEEL Cylinder
+					let materialWheelFrontCylinder = new THREE.MeshPhongMaterial({map : loadedTexures['cylinderTexture'], side: THREE.DoubleSide});
+					let geometrySWheelFrontCylinder = new THREE.CylinderGeometry(0.3, 0.3, 0.04, 30, 1, false, 0, 2*Math.PI)
+					let wheelFrontCylinderMesh = new THREE.Mesh( geometrySWheelFrontCylinder, materialWheelFrontCylinder );
+					wheelFrontCylinderMesh.castShadow = true;
+					wheelFrontCylinderMesh.name = "Front hjul cylinder";
+					wheelFrontCylinderMesh.position.x = -0.05;
+					wheelFrontCylinderMesh.position.y = -0.02;
+					wheelFrontCylinderMesh.position.z = 0;
+					wheelFrontCylinderMesh.rotation.x = 1.57
+					wheelFrontCylinderMesh.scale.y = 3;
+					wheelFrontMesh.add(wheelFrontCylinderMesh);
 
-					bicycle.add(frame)
-					bicycle.add(steering)
+					// FRONT STEERING METAL
+					let materialFrameFrontSmall = new THREE.MeshPhongMaterial({map : loadedTexures['rammeTexture'], side: THREE.DoubleSide});
+					let geometryFrameFrontSmall = new THREE.CylinderGeometry(0.1, 0.1, 0.7, 30, 1, false, 0, 2*Math.PI)
+					let frameMeshFrontSmall = new THREE.Mesh( geometryFrameFrontSmall, materialFrameFrontSmall );
+					frameMeshFrontSmall.castShadow = true;
+					frameMeshFrontSmall.name = "Ramme front liten";
+					frameMeshFrontSmall.position.x = 0;
+					frameMeshFrontSmall.position.y = 0;
+					frameMeshFrontSmall.position.z = -1.5;
+					frameMeshFrontSmall.rotation.x = 0.30
+					bicycle.add(frameMeshFrontSmall);
+					//
+					let materialSteeringRight = new THREE.MeshPhongMaterial({map : loadedTexures['frontTexture'], side: THREE.DoubleSide});
+					let geometrySteeringRight = new THREE.CylinderGeometry(0.05, 0.05, 0.56, 30, 1, false, 0, 2*Math.PI)
+					let steeringRightMesh = new THREE.Mesh( geometrySteeringRight, materialSteeringRight );
+					steeringRightMesh.castShadow = true;
+					steeringRightMesh.name = "Styring metal";
+					steeringRightMesh.position.x = 0.15;
+					steeringRightMesh.position.y = -0.6;
+					steeringRightMesh.position.z = 0;
+					steeringRightMesh.rotation.x = 0
+					steeringRightMesh.scale.y = 3;
+					frameMeshFrontSmall.add(steeringRightMesh);
+					//
+					let materialSteeringLeft = new THREE.MeshPhongMaterial({map : loadedTexures['frontTexture'], side: THREE.DoubleSide});
+					let geometrySteeringLeft = new THREE.CylinderGeometry(0.05, 0.05, 0.56, 30, 1, false, 0, 2*Math.PI)
+					let steeringLefttMesh = new THREE.Mesh( geometrySteeringLeft, materialSteeringLeft );
+					steeringLefttMesh.castShadow = true;
+					steeringLefttMesh.name = "Styring metal";
+					steeringLefttMesh.position.x = -0.15;
+					steeringLefttMesh.position.y = -0.6;
+					steeringLefttMesh.position.z = 0;
+					steeringLefttMesh.rotation.x = 0
+					steeringLefttMesh.scale.y = 3;
+					frameMeshFrontSmall.add(steeringLefttMesh);
+
+
+
 					scene.add(bicycle)
 
 					animate();
