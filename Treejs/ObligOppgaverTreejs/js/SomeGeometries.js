@@ -68,7 +68,11 @@ export function main() {
 	directionalLight.position.set(2, 1, 4);
 	scene.add(directionalLight);
 
-	addModels();
+	addPlane();
+
+	addCup();
+
+	addCube();
 
 	addCoordSystem(scene);
 
@@ -90,7 +94,7 @@ function handleKeyDown(event) {
 	currentlyPressedKeys[event.keyCode] = true;
 }
 
-function addModels() {
+function addPlane() {
 	//Plan:
 	let gPlane = new THREE.PlaneGeometry( SIZE*3, SIZE*3 );
 	let mPlane = new THREE.MeshLambertMaterial( {color: 0xffffffff, side: THREE.DoubleSide } );
@@ -101,14 +105,7 @@ function addModels() {
 
 	//Fartsvektor (illustrert):
 	arrowHelper = new THREE.ArrowHelper(speedVector, new THREE.Vector3(0, 0.01, 0), heliSpeed*100, 0xff0000);
-	scene.add(arrowHelper);
-
-	addCup();
-
-
-
-	addCube();
-
+	scene.add(arrowHelper)
 }
 
 function addCube() {
@@ -124,21 +121,30 @@ function addCube() {
 			image.url,
 			( texture ) => {
 				loadedTexures[image.name] = texture;
-
 				texturesToLoad.splice( texturesToLoad.indexOf(image), 1);
 
 				if ( !texturesToLoad.length ) {
-
-					let cup = new THREE.Group();
-					cup.position.x = 20;
-					cup.position.y = 0;
-					cup.position.z = 0;
-					cup.scale.x = 10;
-					cup.scale.y = 10;
-					cup.scale.z = 10;
+					let cube = new THREE.Group();
+					cube.position.x = 20;
+					cube.position.y = 0;
+					cube.position.z = 0;
+					cube.scale.x = 10;
+					cube.scale.y = 10;
+					cube.scale.z = 10;
 
 					let materialCube = new THREE.MeshPhongMaterial({map : loadedTexures['cubeTexture'], side: THREE.DoubleSide});	//NB! MeshPhongMaterial
 
+					// CUBE
+					let geometryCube = new THREE.BoxGeometry(2,2,2)
+					let cubeMesh = new THREE.Mesh( geometryCube, materialCube );
+					cubeMesh.castShadow = true;
+					cubeMesh.name = "Cube";
+					cubeMesh.position.x = 0;
+					cubeMesh.position.y = 1;
+					cubeMesh.position.z = 6;
+					cube.add(cubeMesh);
+
+					scene.add(cube)
 
 					animate();
 				}
@@ -154,8 +160,7 @@ function addCube() {
 function addCup() {
 
 	let texturesToLoad = [
-		{name: 'imageCockpit', url: 'images/metal1.jpg'},
-		{name: 'imageBody', url: 'images/chocchip.png'},
+		{name: 'cubeTexture', url: 'images/metal1.jpg'},
 	];
 
 	let loadedTexures={};
@@ -166,11 +171,9 @@ function addCup() {
 			image.url,
 			( texture ) => {
 				loadedTexures[image.name] = texture;
-
 				texturesToLoad.splice( texturesToLoad.indexOf(image), 1);
 
 				if ( !texturesToLoad.length ) {
-
 					let cup = new THREE.Group();
 					cup.position.x = 20;
 					cup.position.y = 0;
@@ -269,6 +272,55 @@ function addCup() {
 					// helicopter.position.y = 100;
 
 					// Starter løkka!
+					animate();
+				}
+				console.log('[TextureLoader] Loaded %o', image.name);
+			},
+			undefined,
+			function ( err ) {
+				console.error( 'Feil ved lasting av teksturfil...' );
+			});
+	}
+}
+
+function addSphere() {
+	let texturesToLoad = [
+		{name: 'imageCockpit', url: 'images/metal1.jpg'},
+	];
+
+	let loadedTexures={};
+	const loader = new THREE.TextureLoader();
+
+	for ( let image of texturesToLoad ) {
+		loader.load(
+			image.url,
+			( texture ) => {
+				loadedTexures[image.name] = texture;
+				texturesToLoad.splice( texturesToLoad.indexOf(image), 1);
+
+				if ( !texturesToLoad.length ) {
+					let cube = new THREE.Group();
+					cube.position.x = 20;
+					cube.position.y = 0;
+					cube.position.z = 0;
+					cube.scale.x = 10;
+					cube.scale.y = 10;
+					cube.scale.z = 10;
+
+					let materialCube = new THREE.MeshPhongMaterial({map : loadedTexures['cubeTexture'], side: THREE.DoubleSide});	//NB! MeshPhongMaterial
+
+					// CUBE
+					let geometryCube = new THREE.BoxGeometry(2,2,2)
+					let cubeMesh = new THREE.Mesh( geometryCube, materialCube );
+					cubeMesh.castShadow = true;
+					cubeMesh.name = "Cube";
+					cubeMesh.position.x = 0;
+					cubeMesh.position.y = 1;
+					cubeMesh.position.z = 6;
+					cube.add(cubeMesh);
+
+					scene.add(cube)
+
 					animate();
 				}
 				console.log('[TextureLoader] Loaded %o', image.name);
