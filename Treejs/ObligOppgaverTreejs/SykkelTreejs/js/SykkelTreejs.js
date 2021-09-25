@@ -70,13 +70,7 @@ export function main() {
 
 	addPlane();
 
-	addCup();
-
-	addCube();
-
-	addSphere();
-
-	addPyramide();
+	addBicycle();
 
 	addCoordSystem(scene);
 
@@ -112,9 +106,9 @@ function addPlane() {
 	scene.add(arrowHelper)
 }
 
-function addCube() {
+function addBicycle() {
 	let texturesToLoad = [
-		{name: 'cubeTexture', url: 'images/Seamless_Wood.jpg'},
+		{name: 'rammeTexture', url: '../images/black-metal.jpg'},
 	];
 
 	let loadedTexures={};
@@ -137,7 +131,7 @@ function addCube() {
 					cube.scale.z = 10;
 
 					// CUBE
-					let materialCube = new THREE.MeshPhongMaterial({map : loadedTexures['cubeTexture'], side: THREE.DoubleSide});	//NB! MeshPhongMaterial
+					let materialCube = new THREE.MeshPhongMaterial({map : loadedTexures['rammeTexture'], side: THREE.DoubleSide});
 					let geometryCube = new THREE.BoxGeometry(2,2,2)
 					let cubeMesh = new THREE.Mesh( geometryCube, materialCube );
 					cubeMesh.castShadow = true;
@@ -286,103 +280,6 @@ function addCup() {
 			});
 	}
 }
-
-function addSphere() {
-	let texturesToLoad = [
-		{name: 'SphereTexture', url: 'images/interior-stone.jpeg'},
-	];
-
-	let loadedTexures={};
-	const loader = new THREE.TextureLoader();
-
-	for ( let image of texturesToLoad ) {
-		loader.load(
-			image.url,
-			( texture ) => {
-				loadedTexures[image.name] = texture;
-				texturesToLoad.splice( texturesToLoad.indexOf(image), 1);
-
-				if ( !texturesToLoad.length ) {
-					let sphere = new THREE.Group();
-					sphere.position.x = 20;
-					sphere.position.y = 0;
-					sphere.position.z = 0;
-					sphere.scale.x = 10;
-					sphere.scale.y = 10;
-					sphere.scale.z = 10;
-
-					// SPHERE
-					let materialSphere = new THREE.MeshPhongMaterial({map : loadedTexures['SphereTexture'], side: THREE.DoubleSide});	//NB! MeshPhongMaterial
-					let geometrySphere = new THREE.SphereGeometry(2.0, 32, 16, 0, Math.PI * 2, 0.0, Math.PI)
-					let sphereMesh = new THREE.Mesh( geometrySphere, materialSphere );
-					sphereMesh.castShadow = true;
-					sphereMesh.name = "Sphere";
-					sphereMesh.position.x = -7;
-					sphereMesh.position.y = 2;
-					sphereMesh.position.z = 0;
-					sphere.add(sphereMesh);
-
-					scene.add(sphere)
-
-					animate();
-				}
-				console.log('[TextureLoader] Loaded %o', image.name);
-			},
-			undefined,
-			function ( err ) {
-				console.error( 'Feil ved lasting av teksturfil...' );
-			});
-	}
-}
-
-function addPyramide() {
-	let texturesToLoad = [
-		{name: 'PyramideTexture', url: 'images/water1.png'},
-	];
-
-	let loadedTexures={};
-	const loader = new THREE.TextureLoader();
-
-	for ( let image of texturesToLoad ) {
-		loader.load(
-			image.url,
-			( texture ) => {
-				loadedTexures[image.name] = texture;
-				texturesToLoad.splice( texturesToLoad.indexOf(image), 1);
-
-				if ( !texturesToLoad.length ) {
-					let pyramide = new THREE.Group();
-					pyramide.position.x = 20;
-					pyramide.position.y = 0;
-					pyramide.position.z = 0;
-					pyramide.scale.x = 10;
-					pyramide.scale.y = 10;
-					pyramide.scale.z = 10;
-
-					// SPHERE
-					let materialPyramide = new THREE.MeshPhongMaterial({map : loadedTexures['PyramideTexture'], side: THREE.DoubleSide});	//NB! MeshPhongMaterial
-					let geometryPyramide = new THREE.ConeGeometry(2.0, 4, 8, 1, false, 0.0, 2*Math.PI)
-					let pyramideMesh = new THREE.Mesh( geometryPyramide, materialPyramide );
-					pyramideMesh.castShadow = true;
-					pyramideMesh.name = "Sphere";
-					pyramideMesh.position.x = 1;
-					pyramideMesh.position.y = 2;
-					pyramideMesh.position.z = -6;
-					pyramide.add(pyramideMesh);
-
-					scene.add(pyramide)
-
-					animate();
-				}
-				console.log('[TextureLoader] Loaded %o', image.name);
-			},
-			undefined,
-			function ( err ) {
-				console.error( 'Feil ved lasting av teksturfil...' );
-			});
-	}
-}
-
 
 //Legger til roter/zoom av scenen:
 function addControls() {
