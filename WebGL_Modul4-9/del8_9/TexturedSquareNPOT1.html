@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Teksturert rektangel - bruker teksturkoordinater og varying i shaderen.</title>
+</head>
+
+<body onload="main()">
+	<h2>NPOT-teksturert rektangel.</h2>
+	<h4>Legg merke til følgende:</h4>
+	<ul>
+		<li>Enkelt teksturert rektangel og NPOT-teksture.</li>
+		<li>Shaderkoden ligger i scrip-tagger i html-fila.</li>
+		<li>Vertekshaderen tar ikke i mot farge (a_Color) men i stedet en teksturkoordinat (a_TextureCoord).</li>
+		<li>Denne videresendes så vha en varying, v_Texture.</li>
+		<li>Teksturfila (three.png) må lastes ned før man kan ta den i bruk. Se loadTexture() funksjonen nederst.</li>
+		<li>Bildestørrelse:</li>
+		<div>
+			<b>width: <span id="img-width">--</span></b>
+		</div>
+		<div>
+			<b>height: <span id="img-height">--</span></b>
+		</div>
+	</ul>
+
+	<canvas id="webgl" width="800" height="800">
+		Denne nettleseren støtter ikke "canvas"-elementet!
+	</canvas>
+
+	<h4>Kontroll:</h4>
+	<ul>
+		<li>Zoom ut/inn med V/B.</li>
+		<li>Roter scenen vha. WASD</li>
+	</ul>
+	<script src="../../lib/webgl-utils.js"></script>
+	<script src="../../lib/webgl-debug.js"></script>
+	<script src="../../lib/cuon-utils.js"></script>
+	<script src="../../lib/cuon-matrix.js"></script>
+	<script src="../../lib/gl-matrix-min.js"></script>
+	<script src="../../lib/wfa-helpers.js"></script>
+
+	<!-- SQUARE VERTEX SHADER -->
+	<script id="square-vertex-shader" type="x-shader/x-vertex">
+	    attribute vec3 a_Position;
+		attribute vec2 a_TextureCoord;
+		uniform mat4 u_modelviewMatrix;
+		uniform mat4 u_projectionMatrix;
+		varying vec2 v_Texture;
+		void main() {
+			gl_Position = u_projectionMatrix * u_modelviewMatrix * vec4(a_Position, 1.0);
+			v_Texture = a_TextureCoord;
+		}
+    </script>
+
+	<!-- SQUARE FRAGMENT SHADER -->
+	<script id="square-fragment-shader" type="x-shader/x-fragment">
+    	precision mediump float;
+		varying vec2 v_Texture;
+		uniform sampler2D uSampler;
+		void main() {
+			gl_FragColor = texture2D(uSampler, vec2(v_Texture.s, v_Texture.t));
+		}
+    </script>
+	<script src="js/TexturedSquareNPOT1.js"></script>
+</body>
+</html>

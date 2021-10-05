@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>WebGL: Bil ...</title>
+</head>
+
+<body>
+	<canvas id="webgl" width="1000" height="800">
+	Denne nettleseren støtter ikke "canvas"-elementet!
+	</canvas>
+	<div id="fps-counter">
+		FPS: <span id="fps">--</span><br>
+		Base-URI: <span id="uri">--</span>
+	</div>
+	<div>
+		WASD rotere kamera.<br>
+		VB zoom inn/ut<br>
+	</div>
+	<script src="../../lib/webgl-utils.js"></script>
+	<script src="../../lib/webgl-debug.js"></script>
+	<script src="../../lib/cuon-utils.js"></script>
+	<script src="../../lib/cuon-matrix.js"></script>
+	<script src="../../lib/gl-matrix-min.js"></script>
+	<script src="../../lib/wfa-helpers.js"></script>
+	<script src="js/classes/Stack.js"></script>
+	<script src="js/classes/Camera.js"></script>
+	<script src="js/classes/CoordWithShader.js"></script>
+	<script src="js/classes/XZPlaneWithShader.js"></script>
+	<script src="js/classes/CircleWithShader.js"></script>
+	<script src="js/ExampleWithShadersPerClass/MyApp.js"></script>
+
+	<!-- POSITION, COLOR SHADERS (COORD SHADERS) -->
+	<script id="pos-col-vertex-shader" type="x-shader/x-vertex">
+		attribute vec3 a_Position;
+		attribute vec4 a_Color;
+		uniform mat4 u_modelviewMatrix;
+		uniform mat4 u_projectionMatrix;
+		varying vec4 v_Color;
+		void main() {
+			gl_Position = u_projectionMatrix * u_modelviewMatrix * vec4(a_Position,1.0);
+			v_Color = a_Color;
+		}
+	</script>
+	<script id="pos-col-fragment-shader" type="x-shader/x-fragment">
+		precision mediump float;
+		varying vec4 v_Color;
+		void main() {
+			gl_FragColor = v_Color;
+		}
+	</script>
+
+	<!-- POSITION,COLOR & TEXTURE SHADERS -->
+	<script id="pos-col-tex-vertex-shader" type="x-shader/x-vertex">
+		attribute vec3 a_Position;
+		attribute vec4 a_Color;
+		attribute vec2 a_TextureCoord;
+		uniform mat4 u_modelviewMatrix;
+		uniform mat4 u_projectionMatrix;
+		varying vec2 v_Texture;
+		varying vec4 v_Color;
+		void main() {
+			gl_Position = u_projectionMatrix * u_modelviewMatrix * vec4(a_Position, 1.0);
+			v_Color = a_Color;
+			v_Texture = a_TextureCoord;
+		}
+	</script>
+	<script id="pos-col-tex-fragment-shader" type="x-shader/x-fragment">
+		precision mediump float;
+		varying vec2 v_Texture;
+		varying vec4 v_Color;
+		uniform sampler2D uSampler;
+		void main() {
+			gl_FragColor = texture2D(uSampler, vec2(v_Texture.s, v_Texture.t)); // + v_Color;
+		}
+	</script>
+
+	<!--  NB! Dette må kommet ETTER shaderdefinisjonene over -->
+	<script>
+		'use strict';
+		const myApp = new MyApp();
+		myApp.start();
+	</script>
+</body>
+</html>

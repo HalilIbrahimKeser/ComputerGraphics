@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Teksturert KUBE og koordinatsystem</title>
+</head>
+
+<body onload="main()">
+	<h2>Teksturert KUBE og koordinatsystem</h2>
+	<div>
+		<h4>Legg merke til følgende:</h4>
+		<ul>
+			<li>Enkel teksturert kube.</li>
+			<li>I dette eksemplet brukes to ulike shaderpar, et for koordinatsystemet og et for tegning av teksturert KUBE. Tegning av koordinatsystemet bruker posisjon og farge mens tegning av teksturert kube bruker posisjon og teksturkoordinat. </li>
+			<li>Har derfor to forskjellige referanser til shaderprogrammene.</li>
+			<li>Må også aktivere korrekt shaderprogram før man tegner, f.eks.: gl.useProgram(gl.coordShaderProgram). Se draw-funksjonene.</li>
+			<li>Legg også merke til bruk av funksjonene bindShaderParameters(shaderProgram). Denne kalles i toppen av drawCoord() OG drawCube() for å kople til matrisene i korrekt shader.</li>
+			<li>Bildestørrelse:</li>
+			<div>
+				<b>width: <span id="img-width">--</span></b>
+			</div>
+			<div>
+				<b>height: <span id="img-height">--</span></b>
+			</div>
+		</ul>
+	</div>
+
+	<canvas id="webgl" width="800" height="800">
+		Denne nettleseren støtter ikke "canvas"-elementet!
+	</canvas>
+
+	<h4>Kontroll:</h4>
+	<ul>
+		<li>Zoom ut/inn med V/B.</li>
+		<li>Roter scenen vha. WASD</li>
+	</ul>
+
+	<script src="../../lib/webgl-utils.js"></script>
+	<script src="../../lib/webgl-debug.js"></script>
+	<script src="../../lib/cuon-utils.js"></script>
+	<script src="../../lib/cuon-matrix.js"></script>
+	<script src="../../lib/gl-matrix-min.js"></script>
+	<script src="../../lib/wfa-helpers.js"></script>
+
+	<!-- COORD SHADERS -->
+	<script id="coord-vertex-shader" type="x-shader/x-vertex">
+        attribute vec3 a_Position;
+	    attribute vec4 a_Color;
+		uniform mat4 u_modelviewMatrix;
+		uniform mat4 u_projectionMatrix;
+		varying vec4 v_Color;
+		void main() {
+	  		gl_Position = u_projectionMatrix * u_modelviewMatrix * vec4(a_Position,1.0);
+	  		v_Color = a_Color;
+		}
+    </script>
+	<script id="coord-fragment-shader" type="x-shader/x-fragment">
+    	precision mediump float;
+		varying vec4 v_Color;
+		void main() {
+	  		gl_FragColor = v_Color;
+		}
+    </script>
+
+	<!-- CUBE SHADERS -->
+	<script id="cube-vertex-shader" type="x-shader/x-vertex">
+	    attribute vec3 a_Position;
+		attribute vec2 a_TextureCoord;
+		uniform mat4 u_modelviewMatrix;
+		uniform mat4 u_projectionMatrix;
+		varying vec2 v_Texture;
+		void main() {
+			gl_Position = u_projectionMatrix * u_modelviewMatrix * vec4(a_Position, 1.0);
+			v_Texture = a_TextureCoord;
+		}
+    </script>
+	<script id="cube-fragment-shader" type="x-shader/x-fragment">
+    	precision mediump float;
+		varying vec2 v_Texture;
+		uniform sampler2D uSampler;
+		void main() {
+			gl_FragColor = texture2D(uSampler, vec2(v_Texture.s, v_Texture.t));
+		}
+    </script>
+	<script src="js/TexturedCubeAndCoord1.js"></script>
+</body>
+</html>
