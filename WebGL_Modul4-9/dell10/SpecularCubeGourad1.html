@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Speilbelysning (Gourad)</title>
+</head>
+
+<body onload="main()">
+	<h2>Speilbelysning (Gourad)</h2>
+	<div>
+		<h4>Legg merke til følgende:</h4>
+		<ul>
+			<li>Kube og speilbelysning (specular). </li>
+			<li>Bruker punktlys. </li>
+			<li>Beregner lys i verteksshaderen (Gourad-shading). </li>
+		</ul>
+		<div>
+			<b>Lysposisjon: <span id="light-position">--</span></b>
+		</div>
+		<div>
+			<b>Kameraposisjon: <span id="camera-position">--</span></b>
+		</div>
+		<div>
+			<b>Specular lysfarge: <span id="specular-light-color">--</span></b>
+		</div>
+		<div>
+			<b>Ambient lys: <span id="ambient-light">--</span></b>
+		</div>
+		<br>
+		<div>
+			<b>Kamera styres med WASD og VB</b>
+		</div>
+		<br>
+	</div>
+
+	<canvas id="webgl" width="800" height="800">
+		Denne nettleseren støtter ikke "canvas"-elementet!
+	</canvas>
+
+	<h4>Kontroll:</h4>
+	<ul>
+		<li>Zoom ut/inn med V/B.</li>
+		<li>Roter scenen vha. WASD</li>
+	</ul>
+
+	<script src="../../lib/webgl-utils.js"></script>
+	<script src="../../lib/webgl-debug.js"></script>
+	<script src="../../lib/cuon-utils.js"></script>
+	<script src="../../lib/cuon-matrix.js"></script>
+	<script src="../../lib/gl-matrix-min.js"></script>
+	<script src="../../lib/wfa-helpers.js"></script>
+
+	<!-- COORD SHADERS -->
+	<script id="coord-vertex-shader" type="x-shader/x-vertex">
+        attribute vec3 a_Position;
+	    attribute vec4 a_Color;
+		uniform mat4 u_modelviewMatrix;
+		uniform mat4 u_projectionMatrix;
+		varying vec4 v_Color;
+		void main() {
+	  		gl_Position = u_projectionMatrix * u_modelviewMatrix * vec4(a_Position,1.0);
+	  		v_Color = a_Color;
+		}
+    </script>
+	<script id="coord-fragment-shader" type="x-shader/x-fragment">
+    	precision mediump float;
+		varying vec4 v_Color;
+		void main() {
+	  		gl_FragColor = v_Color;
+		}
+    </script>
+
+	<!-- CUBE SHADERS -->
+	<script id="cube-vertex-shader" type="x-shader/x-vertex">
+		attribute vec3 a_Position;
+		attribute vec3 a_Normal;
+		uniform mat4 u_modelMatrix;
+		uniform mat4 u_modelviewMatrix;
+		uniform mat4 u_projectionMatrix;
+		uniform mat3 u_normalMatrix;   //Transformerer normalvektoren vha. denne.
+		uniform vec3 u_cameraPosition; //Kameraposisjon.
+		uniform vec3 u_lightPosition;  //Lyskildeposisjon, punktlys.
+		uniform vec3 u_ambientLightColor;
+		uniform vec3 u_specularLightColor;
+		varying vec3 v_LightWeighting;
+		const float shininess = 32.0;
+		const float intensity = 3.0;
+		//FRA: https://en.wikibooks.org/wiki/GLSL_Programming/GLUT/Specular_Highlights
+
+		void main() {
+			//Transformerer og normaliser normalvektoren.
+			vec3 normalVector = normalize(u_normalMatrix * a_Normal);
+			//NB! Bruker world-matrisa til å transforere posisjonen.
+			vec4 postionInWorldCoords = u_modelMatrix * vec4(a_Position, 1.0);
+			vec3 viewDirection = normalize(u_cameraPosition -  vec3(postionInWorldCoords));
+			vec3 lightDirection = normalize(u_lightPosition - vec3(postionInWorldCoords));	//= normalize(u_lightPosition);
+			vec3 specularReflection;
+			if (dot(normalVector, lightDirection) < 0.0) {
+				// Lyskilden er på feil side?
+				specularReflection = vec3(0.0, 0.0, 0.0);	// Ingen specular refleksjon
+			} else {
+				vec3 reflectedVector = normalize(reflect(-lightDirection, normalVector));
+				float cosAngle = max(0.0, dot(reflectedVector, viewDirection));
+				specularReflection = intensity * vec3(u_specularLightColor) *  pow(cosAngle, shininess);
+			}
+			//Totalt lys/refleksjon fra denne verteksen:
+			v_LightWeighting = u_ambientLightColor + specularReflection;
+			//Transformer vertex:
+			gl_Position = u_projectionMatrix * u_modelviewMatrix * vec4(a_Position, 1.0);
+		}
+	</script>
+	<script id="cube-fragment-shader" type="x-shader/x-fragment">
+		precision mediump float;
+		varying vec3 v_LightWeighting;
+		//kommentar
+		void main() {
+			gl_FragColor = vec4(v_LightWeighting.rgb, 1.0);
+		}
+	</script>
+	<script src="js/SpecularCubeGourad1.js"></script>
+</body>
+</html>

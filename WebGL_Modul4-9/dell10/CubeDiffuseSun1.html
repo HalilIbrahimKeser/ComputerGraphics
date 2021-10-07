@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Diffus sollys</title>
+</head>
+
+<body onload="main()">
+	<h2>Diffus sollys</h2>
+	<div>
+		<h4>Legg merke til følgende:</h4>
+		<ul>
+			<li>Kube belyst med Diffust OG Ambient Lys. </li>
+			<li>Shaderne ligger nå i .html - fila. </li>
+			<li>Sender inn ambient og diffus lysfarge til shaderen. </li>
+		</ul>
+		<div>
+			<b>Lysretning: <span id="light-direction">--</span></b>
+		</div>
+		<div>
+			<b>Diffus lysfarge: <span id="diffuse-light-color">--</span></b>
+		</div>
+		<div>
+			<b>Ambient lys: <span id="ambient-light">--</span></b>
+		</div>
+		<br>
+		<div>
+			<b>Kameraposisjon: <span id="camera">--</span></b>
+		</div>
+	</div>
+
+	<canvas id="webgl" width="800" height="800">
+		Denne nettleseren støtter ikke "canvas"-elementet!
+	</canvas>
+
+	<h4>Kontroll:</h4>
+	<ul>
+		<li>Zoom ut/inn med V/B.</li>
+		<li>Roter scenen vha. WASD</li>
+	</ul>
+
+	<script src="../../lib/webgl-utils.js"></script>
+	<script src="../../lib/webgl-debug.js"></script>
+	<script src="../../lib/cuon-utils.js"></script>
+	<script src="../../lib/cuon-matrix.js"></script>
+	<script src="../../lib/gl-matrix-min.js"></script>
+	<script src="../../lib/wfa-helpers.js"></script>
+	<!-- COORD SHADERS -->
+	<script id="coord-vertex-shader" type="x-shader/x-vertex">
+        attribute vec3 a_Position;
+	    attribute vec4 a_Color;
+		uniform mat4 u_modelviewMatrix;
+		uniform mat4 u_projectionMatrix;
+		varying vec4 v_Color;
+		void main() {
+	  		gl_Position = u_projectionMatrix * u_modelviewMatrix * vec4(a_Position,1.0);
+	  		v_Color = a_Color;
+		}
+    </script>
+	<script id="coord-fragment-shader" type="x-shader/x-fragment">
+    	precision mediump float;
+		varying vec4 v_Color;
+		void main() {
+	  		gl_FragColor = v_Color;
+		}
+    </script>
+
+	<!-- CUBE SHADERS -->
+	<script id="cube-vertex-shader" type="x-shader/x-vertex">
+	    attribute vec3 a_Position;
+		attribute vec3 a_Normal;    //Normalvektor.
+
+		uniform mat3 u_normalMatrix;    //Transformerer normalvektoren vha. denne.
+		uniform mat4 u_modelviewMatrix;
+		uniform mat4 u_projectionMatrix;
+
+		uniform vec3 u_lightDirection;    //Lysets retning.
+		uniform vec3 u_ambientLightColor;
+		uniform vec3 u_diffuseLightColor;
+
+		varying vec3 v_LightWeighting;
+
+		void main() {
+
+			//Transformer normalvektoren til world-koordinater:
+			vec3 normal = normalize(u_normalMatrix * a_Normal);
+
+			//NB! Lysvektoren må normaliseres:
+			vec3 lightDirectionNorm = normalize(u_lightDirection);
+			//Beregn prikkprodukt av lysvektor og normalvektor
+			//for diffus belysning:
+			float diffusLightWeightning = max(dot(normal, lightDirectionNorm), 0.0);
+
+			//Summer alle refleksjonskomponenter og send til fragmentshader:
+			v_LightWeighting = u_ambientLightColor + (u_diffuseLightColor * diffusLightWeightning);
+
+			//Transformer vertex:
+			gl_Position = u_projectionMatrix * u_modelviewMatrix * vec4(a_Position, 1.0);
+		}
+    </script>
+	<script id="cube-fragment-shader" type="x-shader/x-fragment">
+    	precision mediump float;
+		varying vec3 v_LightWeighting;
+
+		void main() {
+ 			gl_FragColor = vec4(v_LightWeighting.rgb, 1.0);
+		}
+    </script>
+	<script src="js/CubeDiffuseSun1.js"></script>
+</body>
+</html>

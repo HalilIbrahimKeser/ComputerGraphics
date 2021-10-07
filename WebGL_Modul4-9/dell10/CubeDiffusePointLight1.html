@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Diffust punktlys</title>
+</head>
+
+<body onload="main()">
+	<h2>Diffust punktlys</h2>
+	<div>
+		<h4>Legg merke til følgende:</h4>
+		<ul>
+			<li>Kube belyst med diffust punktlys. </li>
+			<li>Illustrerer/tegner også punktlyskilden som en gul kube. Denne kan flyttes på vha. tastaturet. </li>
+			<li>Bruker eget shaderpar for lyskilden, i tillegg til de to andre.</li>
+		</ul>
+		<h4>Kontroll:</h4>
+		<ul>
+			<li>Zoom ut/inn med V/B.</li>
+			<li>Roter scenen vha. WASD</li>
+			<li>Flytt på lyskilden vha.: Y,U  H,J  N,M</li>
+		</ul>
+	</div>
+
+	<canvas id="webgl" width="800" height="800">
+		Denne nettleseren støtter ikke "canvas"-elementet!
+	</canvas>
+
+
+
+	<script src="../../lib/webgl-utils.js"></script>
+	<script src="../../lib/webgl-debug.js"></script>
+	<script src="../../lib/cuon-utils.js"></script>
+	<script src="../../lib/cuon-matrix.js"></script>
+	<script src="../../lib/gl-matrix-min.js"></script>
+	<script src="../../lib/wfa-helpers.js"></script>
+
+	<!-- COORD SHADERS -->
+	<script id="coord-vertex-shader" type="x-shader/x-vertex">
+        attribute vec3 a_Position;
+	    attribute vec4 a_Color;
+		uniform mat4 u_modelviewMatrix;
+		uniform mat4 u_projectionMatrix;
+		varying vec4 v_Color;
+		void main() {
+	  		gl_Position = u_projectionMatrix * u_modelviewMatrix * vec4(a_Position,1.0);
+	  		v_Color = a_Color;
+		}
+    </script>
+	<script id="coord-fragment-shader" type="x-shader/x-fragment">
+    	precision mediump float;
+		varying vec4 v_Color;
+		void main() {
+	  		gl_FragColor = v_Color;
+		}
+    </script>
+
+	<!-- CUBE SHADERS -->
+	<script id="cube-vertex-shader" type="x-shader/x-vertex">
+		attribute vec3 a_Position;
+		attribute vec3 a_Normal;		//Normalvektor.
+
+		uniform mat4 u_modelMatrix;		//model/world-matrisa brukes til lyskalk.
+		uniform mat3 u_normalMatrix;	//brukes til lyskalk. Transformerer normalvektoren.
+		uniform mat4 u_modelviewMatrix;
+		uniform mat4 u_projectionMatrix;
+
+		uniform vec3 u_lightPosition;	//Lyskildens posisjon (bruker punktlys).
+		uniform vec3 u_ambientLightColor;
+		uniform vec3 u_diffuseLightColor;
+
+		varying vec3 v_LightWeighting;
+
+		void main() {
+			//Transformer til world-koordinater:
+			vec4 vertexPosition = u_modelMatrix * vec4(a_Position, 1.0);
+
+			//Beregn vektoren fra denne verteksen til lyskilden:
+			vec3 vectorToLightSource = normalize(u_lightPosition - vec3(vertexPosition));
+
+			//Transformer normalvektoren:
+			///vec3 normal = normalize(vec3(u_normalMatrix * vec4(a_Normal, 1.0)));
+			vec3 normal = normalize(u_normalMatrix * a_Normal);
+
+			//Beregn prikkprodukt av lysvektor og normalvektor for diffus belysning:
+			float diffusLightWeightning = max(dot(normal, vectorToLightSource), 0.0);
+
+			//Summer alle refleksjonskomponenter og send til fragmentshader:
+			v_LightWeighting = u_ambientLightColor + (u_diffuseLightColor * diffusLightWeightning);
+
+			//Transformer vertex:
+			gl_Position = u_projectionMatrix * u_modelviewMatrix * vec4(a_Position, 1.0);
+		}
+    </script>
+	<script id="cube-fragment-shader" type="x-shader/x-fragment">
+		precision mediump float;
+		varying vec3 v_LightWeighting;
+		//kommentar
+		void main() {
+			gl_FragColor = vec4(v_LightWeighting.rgb, 1.0);
+		}
+	</script>
+
+	<!-- POINT LIGHT SOURCE SHADERS -->
+	<script id="light-source-vertex-shader" type="x-shader/x-vertex">
+		attribute vec3 a_Position;
+		uniform mat4 u_modelviewMatrix;
+		uniform mat4 u_projectionMatrix;
+		void main() {
+			gl_Position = u_projectionMatrix * u_modelviewMatrix * vec4(a_Position,1.0);
+		}
+	</script>
+	<script id="light-source-fragment-shader" type="x-shader/x-fragment">
+		precision mediump float;
+		uniform vec4 u_FragColor;
+		void main() {
+			gl_FragColor = u_FragColor;
+		}
+	</script>
+
+	<script src="js/CubeDiffusePointLight1.js"></script>
+</body>  
+</html>
